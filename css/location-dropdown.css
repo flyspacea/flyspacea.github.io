@@ -1,0 +1,33 @@
+#flights-filter-row {
+
+}
+
+#location-dropdown-btn-group {
+	margin-top: 20px;
+	width: 100%;
+}
+
+#location-dropdown-btn {
+	width: 100%;
+}
+
+#location-dropdown-btn > span {
+	display: inline-block;
+	width: 80%;
+	margin-bottom:-10px;
+
+	overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  
+}
+
+#direction-toggle-btn-group {
+	margin-top: 20px;
+	width: 100%;
+}
+
+#direction-toggle-btn-group > label {
+	width: 50%;
+}

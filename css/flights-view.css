@@ -1,0 +1,16 @@
+#flights-view-row {
+	margin-top: 20px;
+}
+
+tr.flights-view-date-table-row {
+	line-height: .9;
+  font-size: .5em;
+}
+
+#flights-view-table {
+	
+}
+
+.table.disabled {
+	color: #aaaaaa;
+}
