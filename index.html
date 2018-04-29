@@ -19,9 +19,9 @@
 <body>
 	<div class="container" id="flights-container">
 		<div class="row" id="flights-filter-row">
-			<div class="col">
+			<div class="col-sm-6">
 				<div class="btn-group" id="location-dropdown-btn-group">
-					<button class="btn btn-secondary btn-lg dropdown-toggle" id="location-dropdown-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>…</span></button>
+					<button class="btn btn-secondary btn-lg dropdown-toggle" id="location-dropdown-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>&#x2026;</span></button>
 
 					<div class="dropdown-menu">
 						<h6 class="dropdown-header">Dropdown header</h6>
@@ -30,7 +30,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col">
+			<div class="col-sm-6">
 				<div class="btn-group btn-group-toggle" id="direction-toggle-btn-group" data-toggle="buttons">
 						<!--
 							To check radio button
@@ -39,10 +39,10 @@
 							$('input[name=flightDirection][value=departures]').prop("checked");
 						-->
 
-						<label class="btn btn-lg btn-secondary">
+						<label class="btn btn-lg btn-secondary" id="departures-label">
 							<input type="radio" name="flightDirection" value="departures" autocomplete="off"> Departures
 						</label>
-						<label class="btn btn-lg btn-secondary">
+						<label class="btn btn-lg btn-secondary" id="arrivals-label">
 							<input type="radio" name="flightDirection" value="arrivals" autocomplete="off"> Arrivals
 						</label>
 					</div>
@@ -51,7 +51,7 @@
 			<div class="row" id="progress-bar-row">
 				<div class="col col-offset-1">
 					<div class="progress">
-					  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">
+					  <div class="progress-bar progress-bar-striped progress-bar-animated" id="loading-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">
 					  	<span></span>
 					  </div>
 					</div>

@@ -19,8 +19,13 @@
 	overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
 
-  
+.dropdown-menu.show {
+	height: auto;
+	max-height: 300px;
+	overflow-x: scroll;
+	overflow-y: scroll;
 }
 
 #direction-toggle-btn-group {
