@@ -11,6 +11,9 @@
 	<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
 
+	<script type="text/javascript" src="js/moment-with-locales.min.js"></script>
+	<script type="text/javascript" src="js/moment-timezone-with-data.min.js"></script>
+
 	<script type="text/javascript" src="js/handlers.js"></script>
 	<script type="text/javascript" src="js/ui-states.js"></script>
 	<script type="text/javascript" src="js/spacea.js"></script>
@@ -65,9 +68,10 @@
 								<th scope="col">Roll Call</th>
 								<th scope="col">Location</th>
 								<th scope="col">Seats</th>
+								<th scope="col">Source</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="flights-view-table-body">
 							<tr class="flights-view-date-table-row">
 								<th>&#x2026;</th>
 								<td></td>
