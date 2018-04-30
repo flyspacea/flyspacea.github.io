@@ -1,4 +1,4 @@
-var backendBaseURL = "http://spacea.herokuapp.com"
+var backendBaseURL = "https://spacea.herokuapp.com"
 var backendDistinctLocationsHandler = '/locations';
 var backendFlightsHandler = '/flights';
 
