@@ -1,4 +1,5 @@
 var locationDropdownBtn;
+var locationDropdownMenuHeader;
 var directionToggleBtns;
 var arrivalToggleButtonLabel;
 var departureToggleButtonLabel;
@@ -11,6 +12,7 @@ var flightsViewTableBody;
 
 function setUIVariables() {
 	locationDropdownBtn = $("#location-dropdown-btn")
+	locationDropdownMenuHeader = $("#location-dropdown-menu-header")
 	directionToggleBtns = $('#direction-toggle-btn-group > label')
 	progressBarRow = $("#progress-bar-row")
 	progressBarText = $("#progress-bar-row>div>div>div>span")
@@ -42,7 +44,7 @@ function setupToggleHandlers() {
 }
 
 function addLocationDropdownTooltip() {
-	locationDropdownBtn.attr("title", "Only listing terminals with flights within 72 hours.").tooltip({
+	locationDropdownMenuHeader.attr("data-toggle", "tooltip").attr("title", "Only listing terminals with flights within 72 hours.").tooltip({
 		trigger: 'hover'
 	})
 }
@@ -74,6 +76,9 @@ function setDirectionToggleBtnsState(enabled) {
 
 //Enable toggle buttons for location
 function enableDirectionToggleBtnsBasedOnLocation(location) {
+	if (location.length == 0)
+		return
+
 	//Reenable toggle buttons individually
 	arrivalToggleButtonLabel.removeClass('disabled');
 	//selectedFlightDirection = FlightDirectionEnum.arrival;
@@ -150,7 +155,7 @@ function setLocationsInDropdown(locations) {
  */
 function setFlightsViewData(flights, location, direction, startDate, durationDays) {
 
-	function createFlightRow(flight, rc) {
+	function createFlightRow(flight, rc, location) {
 		//Create flight row
 		var flightRow = $("<tr/>").addClass("")
 
@@ -158,6 +163,13 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 		flightRow.append(
 			$("<th/>").addClass("").text(rc.format('HHmm'))
 		)
+
+		//Add Origin column IF locatin is blank meaning latest flights view
+		if (location.length == 0) {
+			flightRow.append(
+				$("<td/>").addClass("").text(flight['origin'])
+			)
+		}
 
 		//Add location column
 		flightRow.append(
@@ -195,10 +207,13 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 	var headerRow = $("<tr/>").addClass("")
 	headerRow.append(
 		$("<th/>").attr("scope", "col").text("Roll Call"),
+		location.length == 0 ? $("<th/>").attr("scope", "col").text("Origin") : $("<meta/>"), //only insert origin column if location is blank which indicates latest flights overview
 		$("<th/>").attr("scope", "col").text(direction == FlightDirectionEnum.departure ? "Destination" : "Origin"),
 		$("<th/>").attr("scope", "col").text("Seats"),
 		$("<th/>").attr("scope", "col").text("\u2026") //horizontal ellipsis
 	)
+
+	//Add tooltip explaining origin roll call times for arrival view
 	if (direction == FlightDirectionEnum.arrival) {
 		headerRow.children(":first-child").text("Roll Call ")
 		headerRow.children(":first-child").append(
@@ -257,7 +272,7 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 			//Check if flight is for this date range
 			if (rc.isBetween(startDate, tomorrowDate, null, '[)')) {
 				//Append created row to DOM
-				flightsViewTableBody.append(createFlightRow(flights[f], rc));
+				flightsViewTableBody.append(createFlightRow(flights[f], rc, location));
 
 				//Mark counter as found date
 				flightsFoundForDate = true;
@@ -323,7 +338,7 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 			var rc = moment(flights[f]['rollCall'], "YYYY-MM-DDTHH:mm:ssZ").tz(airportTZTitle)
 
 			//Append created row to DOM
-			flightsViewTableBody.append(createFlightRow(flights[f], rc));
+			flightsViewTableBody.append(createFlightRow(flights[f], rc, location));
 
 			//Mark counter as found date
 			flightsFoundForDate = true;

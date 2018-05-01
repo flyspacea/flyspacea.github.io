@@ -18,6 +18,10 @@ var FlightDirectionEnum = {
 
 $(document).ready(function() {
 	updateLocationDropdown();
+
+	//Show some flights
+	now = moment(); 
+	updateFlightsView('', FlightDirectionEnum.departure, now, 1)
 });
 
 function updateError(title, callback) {

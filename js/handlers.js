@@ -29,14 +29,7 @@ function dropdownItemSelected(title) {
  * Get flights list when direction toggle clicked.
  */
 function directionToggleSelected(direction) {
-	console.log("toggled")
 	//Get start of local date before today
 	now = moment().startOf('day'); 
-	/*
-	var now = new Date();
-	now.setDate(now.getDate() - 1)
-	now.setHours(0, 0, 0, 0);
-	*/
-
 	updateFlightsView(selectedLocation, direction, now, daysLookupRange)
 }
