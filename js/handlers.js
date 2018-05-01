@@ -10,13 +10,11 @@ function dropdownItemSelected(title) {
 	setDirectionToggleBtnsState(false);
 
 	//Reenable toggle buttons individually
-	arrivalToggleButtonLabel.removeClass('disabled');
+	enableDirectionToggleBtnsBasedOnLocation(title)
 	arrivalToggleButtonLabel.button('toggle');
 	//selectedFlightDirection = FlightDirectionEnum.arrival;
 
 	if ($.inArray(title, presetLocations) != -1){
-		console.log("found" + title + $.inArray(title, presetLocations))
-		departureToggleButtonLabel.removeClass('disabled');
 		departureToggleButtonLabel.button('toggle');
 		//selectedFlightDirection = FlightDirectionEnum.departure;
 

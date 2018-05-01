@@ -24,12 +24,12 @@
 		<div class="row" id="flights-filter-row">
 			<div class="col-sm-6">
 				<div class="btn-group" id="location-dropdown-btn-group">
-					<button class="btn btn-secondary btn-lg dropdown-toggle" id="location-dropdown-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>&#x2026;</span></button>
+					<button class="btn btn-secondary btn-lg dropdown-toggle disabled" id="location-dropdown-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>&#x2026;</span></button>
 
 					<div class="dropdown-menu">
-						<h6 class="dropdown-header">Dropdown header</h6>
-						<a class="dropdown-item" href="#">test1</a>
-						<a class="dropdown-item" href="#">test2</a>
+						<h6 class="dropdown-header">72 HR flight locations</h6>
+						<a class="dropdown-item" href="#">&#x2026;</a>
+						<a class="dropdown-item" href="#">&#x2026;</a>
 					</div>
 				</div>
 			</div>
@@ -42,10 +42,10 @@
 							$('input[name=flightDirection][value=departures]').prop("checked");
 						-->
 
-						<label class="btn btn-lg btn-secondary" id="departures-label">
+						<label class="btn btn-lg btn-secondary disabled" id="departures-label">
 							<input type="radio" name="flightDirection" value="departures" autocomplete="off"> Departures
 						</label>
-						<label class="btn btn-lg btn-secondary" id="arrivals-label">
+						<label class="btn btn-lg btn-secondary disabled" id="arrivals-label">
 							<input type="radio" name="flightDirection" value="arrivals" autocomplete="off"> Arrivals
 						</label>
 					</div>
@@ -54,15 +54,15 @@
 			<div class="row" id="progress-bar-row">
 				<div class="col col-offset-1">
 					<div class="progress">
-					  <div class="progress-bar progress-bar-striped progress-bar-animated" id="loading-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">
-					  	<span></span>
+					  <div class="progress-bar progress-bar-striped progress-bar-animated" id="loading-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+					  	<span>Javascript must be enabled to view flights.</span>
 					  </div>
 					</div>
 				</div>
 			</div>
 			<div class="row" id="flights-view-row">
 				<div class="col col-offset-1">
-					<table class="table" id="flights-view-table">
+					<table class="table disabled" id="flights-view-table">
 						<thead id="flights-view-table-head">
 							<tr>
 								<th scope="col">Roll Call</th>

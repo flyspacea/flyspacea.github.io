@@ -141,7 +141,7 @@ function updateFlightsView(location, direction, startDate, durationDays) {
 
 					hideProgressBar();
 					setLocationDropdownBtnState(true);
-					setDirectionToggleBtnsState(true);
+					enableDirectionToggleBtnsBasedOnLocation(location)
 					setFlightsViewTableState(true);
 					break;
 				default:

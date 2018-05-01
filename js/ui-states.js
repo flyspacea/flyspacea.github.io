@@ -72,6 +72,17 @@ function setDirectionToggleBtnsState(enabled) {
 	}
 }
 
+//Enable toggle buttons for location
+function enableDirectionToggleBtnsBasedOnLocation(location) {
+	//Reenable toggle buttons individually
+	arrivalToggleButtonLabel.removeClass('disabled');
+	//selectedFlightDirection = FlightDirectionEnum.arrival;
+
+	if ($.inArray(location, presetLocations) != -1){
+		departureToggleButtonLabel.removeClass('disabled');
+	}
+}
+
 function setFlightsViewTableState(enabled) {
 	if (enabled) {
 		flightsViewTable.removeClass("disabled")
@@ -80,6 +91,7 @@ function setFlightsViewTableState(enabled) {
 	}
 }
 
+//Show progress bar with text
 function showProgressBarWithText(text) {
 	if (progressBarRow.is(':animated'))
 		progressBarRow.finish();
@@ -94,6 +106,7 @@ function showProgressBarWithText(text) {
 	}
 }
 
+//Hide progress bar and clear text
 function hideProgressBar() {
 	if (progressBarRow.is(':animated'))
 		progressBarRow.finish();
@@ -261,7 +274,7 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 		if (flightsFoundForDate == false) {
 			var flightRow = $("<tr/>").addClass("")
 			flightRow.append(
-				$("<td/>").addClass("").text('No flights found.')
+				$("<td/>").addClass("no-flights").text('No flights found.')
 			)
 
 			//Add blank <td> row col elements to match number of columns in table

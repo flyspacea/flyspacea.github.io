@@ -2,6 +2,18 @@
 	margin-top: 20px;
 }
 
+#flights-view-table {
+
+}
+
+.table.disabled {
+	color: #aaaaaa;
+}
+
+.origin-local-header-note {
+	font-size: .8em;
+}
+
 tr.flights-view-date-table-row {
 	line-height: .9;
   font-size: 1.5em;
@@ -15,14 +27,6 @@ tr.flights-view-date-table-row {
 
 }
 
-#flights-view-table {
-
-}
-
-.table.disabled {
-	color: #aaaaaa;
-}
-
-.origin-local-header-note {
-	font-size: .8em;
+td.no-flights {
+	font-style: italic;
 }
