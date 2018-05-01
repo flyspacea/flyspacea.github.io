@@ -3,7 +3,7 @@ var directionToggleBtns;
 var arrivalToggleButtonLabel;
 var departureToggleButtonLabel;
 
-var progressBarRow; 
+var progressBarRow;
 var progressBarText;
 var flightsViewTable;
 var flightsViewTableHead;
@@ -38,11 +38,13 @@ function setupToggleHandlers() {
 		if (!arrivalToggleButtonLabel.hasClass('disabled'))
 			directionToggleSelected(FlightDirectionEnum.arrival);
 	});
-	
+
 }
 
 function addLocationDropdownTooltip() {
-	locationDropdownBtn.attr("title", "Only listing terminals with flights within 72 hours.").tooltip({trigger : 'hover'})
+	locationDropdownBtn.attr("title", "Only listing terminals with flights within 72 hours.").tooltip({
+		trigger: 'hover'
+	})
 }
 
 function disableAllUI() {
@@ -82,7 +84,7 @@ function showProgressBarWithText(text) {
 	if (progressBarRow.is(':animated'))
 		progressBarRow.finish();
 
-	if (progressBarRow.css('display') == 'none') 
+	if (progressBarRow.css('display') == 'none')
 		progressBarRow.slideDown(400)
 
 	if (text == null) {
@@ -96,7 +98,7 @@ function hideProgressBar() {
 	if (progressBarRow.is(':animated'))
 		progressBarRow.finish();
 
-	if (progressBarRow.css('display') != 'none') 
+	if (progressBarRow.css('display') != 'none')
 		progressBarRow.slideUp(400, function() {
 			progressBarText.text("");
 		});
@@ -113,14 +115,14 @@ function setDropdownTitle(title) {
 function setLocationsInDropdown(locations) {
 	//Remove past location dropdown menu items
 	$("#location-dropdown-btn-group > .dropdown-menu  > a").each(
-		function(index, element){
+		function(index, element) {
 			element.remove()
 		}
 	);
 
 	locations.forEach(function(element) {
 		$("#location-dropdown-btn-group > .dropdown-menu").append(
-			$("<a/>").addClass("dropdown-item" + (presetLocations.indexOf(element) > 0 ? " gray-tint" : "")).attr("href", "#").text(element) 
+			$("<a/>").addClass("dropdown-item" + (presetLocations.indexOf(element) > 0 ? " gray-tint" : "")).attr("href", "#").text(element)
 			.on('click', function(event) {
 				dropdownItemSelected(event.target.text)
 			})
@@ -134,6 +136,44 @@ function setLocationsInDropdown(locations) {
  * startDate must be start of day. startDate is mutated in this method.
  */
 function setFlightsViewData(flights, location, direction, startDate, durationDays) {
+
+	function createFlightRow(flight, rc) {
+		//Create flight row
+		var flightRow = $("<tr/>").addClass("")
+
+		//Add rollcall column
+		flightRow.append(
+			$("<th/>").addClass("").text(rc.format('HHmm'))
+		)
+
+		//Add location column
+		flightRow.append(
+			$("<td/>").addClass("").text(direction == FlightDirectionEnum.departure ? flight['destination'] : flight['origin'])
+		)
+
+		//Add seats column
+		var seatText = flight['seatCount'].toString();
+		if (flight['seatType'].toUpperCase() == 'T')
+			seatText += " Tentative";
+		else if (flight['seatType'].toUpperCase() == 'F')
+			seatText += " Firm";
+		else if (flight['seatType'].toUpperCase() == 'SP')
+			seatText = "Pending";
+		else
+			seatText = "N/A";
+
+		flightRow.append(
+			$("<td/>").addClass("").text(seatText)
+		)
+
+		//Add source column
+		flightRow.append(
+			$("<td/>").addClass("").text("")
+		)
+
+		return flightRow;
+	}
+
 	//Remove past flights view data rows
 	flightsViewTableHead.empty()
 	flightsViewTableBody.empty()
@@ -187,7 +227,7 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 
 		//Counter to check to insert "no flights found" row
 		var flightsFoundForDate = false;
-		
+
 		//Add rows for flights for that 24hr day
 		while (flights != null && f < flights.length) {
 			if (flights[f]['unknownRollCallDate']) {
@@ -197,48 +237,14 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 
 			//Lookup origin airport location TZ offset
 			var airportTZTitle = presetTZTitles[presetLocations.indexOf(flights[f]['origin'])]
-
 			var rc = moment(flights[f]['rollCall'], "YYYY-MM-DDTHH:mm:ssZ").tz(airportTZTitle)
 			var tomorrowDate = startDate.clone()
 			tomorrowDate.add(1, 'days')
 
 			//Check if flight is for this date range
 			if (rc.isBetween(startDate, tomorrowDate, null, '[)')) {
-				//Create flight row
-				var flightRow = $("<tr/>").addClass("")
-
-				//Add rollcall column
-				flightRow.append(
-					$("<th/>").addClass("").text(rc.format('HHmm'))
-				)
-
-				//Add location column
-				flightRow.append(
-					$("<td/>").addClass("").text(direction == FlightDirectionEnum.departure ? flights[f]['destination'] : flights[f]['origin'])
-				)
-
-				//Add seats column
-				var seatText = flights[f]['seatCount'].toString();
-				if (flights[f]['seatType'] == 'T')
-					seatText += " Tentative";
-				else if (flights[f]['seatType'] == 'F')
-					seatText += " Firm";
-				else if (flights[f]['seatType'] == 'SP')
-					seatText = "Pending";
-				else
-					seatText = "N/A";
-
-				flightRow.append(
-					$("<td/>").addClass("").text(seatText)
-				)
-
-				//Add source column
-				flightRow.append(
-					$("<td/>").addClass("").text("")
-				)
-
 				//Append created row to DOM
-				flightsViewTableBody.append(flightRow);
+				flightsViewTableBody.append(createFlightRow(flights[f], rc));
 
 				//Mark counter as found date
 				flightsFoundForDate = true;
@@ -251,8 +257,6 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 				break;
 			}
 		}
-
-		console.log(flightsFoundForDate)
 
 		if (flightsFoundForDate == false) {
 			var flightRow = $("<tr/>").addClass("")
@@ -273,5 +277,47 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 
 		//Step to next day for loop
 		startDate.add(1, 'days');
+	}
+
+	//Now list partial match flights
+	f = 0;
+	//Determine whether to append partial match table row header
+	var partialMatchFound = false;
+	while (flights != null && f < flights.length) {
+		if (flights[f]['unknownRollCallDate']) {
+			if (!partialMatchFound) {
+				//Create date row
+				var dateRow = $("<tr/>").addClass("flights-view-date-table-row")
+				dateRow.append(
+					$("<th/>").addClass("").text("Possible flights \u26a0").attr("data-toggle", "tooltip").attr("data-placement", "right").attr("title", "Flights that were found with a low confidence date and time.").tooltip()
+				)
+
+				//Add blank <td> row col elements to match number of columns in table
+				for (i = 1; i < numCols; i++) {
+					dateRow.append(
+						$("<td/>")
+					)
+				}
+
+				//Append created row to DOM
+				flightsViewTableBody.append(dateRow);
+			}
+
+			partialMatchFound = true;
+
+			//Lookup origin airport location TZ offset
+			var airportTZTitle = presetTZTitles[presetLocations.indexOf(flights[f]['origin'])]
+			var rc = moment(flights[f]['rollCall'], "YYYY-MM-DDTHH:mm:ssZ").tz(airportTZTitle)
+
+			//Append created row to DOM
+			flightsViewTableBody.append(createFlightRow(flights[f], rc));
+
+			//Mark counter as found date
+			flightsFoundForDate = true;
+			f++
+		} else {
+			f++
+			continue;
+		}
 	}
 }
