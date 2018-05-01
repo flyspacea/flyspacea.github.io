@@ -4,13 +4,25 @@
 
 tr.flights-view-date-table-row {
 	line-height: .9;
-  font-size: .5em;
+  font-size: 1.5em;
+}
+
+#flights-view-table-body th {
+	font-size: 1.2em;
+}
+
+#flights-view-table-body td {
+
 }
 
 #flights-view-table {
-	
+
 }
 
 .table.disabled {
 	color: #aaaaaa;
+}
+
+.origin-local-header-note {
+	font-size: .8em;
 }

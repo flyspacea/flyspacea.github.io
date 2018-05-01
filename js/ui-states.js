@@ -6,6 +6,7 @@ var departureToggleButtonLabel;
 var progressBarRow; 
 var progressBarText;
 var flightsViewTable;
+var flightsViewTableHead;
 var flightsViewTableBody;
 
 function setUIVariables() {
@@ -14,12 +15,15 @@ function setUIVariables() {
 	progressBarRow = $("#progress-bar-row")
 	progressBarText = $("#progress-bar-row>div>div>div>span")
 	flightsViewTable = $("#flights-view-table")
+	flightsViewTableHead = $("#flights-view-table-head")
 	flightsViewTableBody = $("#flights-view-table-body")
 
 	arrivalToggleButtonLabel = $("#arrivals-label")
 	departureToggleButtonLabel = $("#departures-label")
 
+	addLocationDropdownTooltip()
 	setupToggleHandlers()
+
 }
 
 function setupToggleHandlers() {
@@ -35,6 +39,10 @@ function setupToggleHandlers() {
 			directionToggleSelected(FlightDirectionEnum.arrival);
 	});
 	
+}
+
+function addLocationDropdownTooltip() {
+	locationDropdownBtn.attr("title", "Only listing terminals with flights within 72 hours.").tooltip({trigger : 'hover'})
 }
 
 function disableAllUI() {
@@ -112,7 +120,7 @@ function setLocationsInDropdown(locations) {
 
 	locations.forEach(function(element) {
 		$("#location-dropdown-btn-group > .dropdown-menu").append(
-			$("<a/>").addClass("dropdown-item").attr("href", "#").text(element)
+			$("<a/>").addClass("dropdown-item" + (presetLocations.indexOf(element) > 0 ? " gray-tint" : "")).attr("href", "#").text(element) 
 			.on('click', function(event) {
 				dropdownItemSelected(event.target.text)
 			})
@@ -127,9 +135,27 @@ function setLocationsInDropdown(locations) {
  */
 function setFlightsViewData(flights, location, direction, startDate, durationDays) {
 	//Remove past flights view data rows
+	flightsViewTableHead.empty()
 	flightsViewTableBody.empty()
 
-	var numCols = $("#flights-view-table thead th").length
+	//Create header row
+	var headerRow = $("<tr/>").addClass("")
+	headerRow.append(
+		$("<th/>").attr("scope", "col").text("Roll Call"),
+		$("<th/>").attr("scope", "col").text(direction == FlightDirectionEnum.departure ? "Destination" : "Origin"),
+		$("<th/>").attr("scope", "col").text("Seats"),
+		$("<th/>").attr("scope", "col").text("\u2026") //horizontal ellipsis
+	)
+	if (direction == FlightDirectionEnum.arrival) {
+		headerRow.children(":first-child").text("Roll Call ")
+		headerRow.children(":first-child").append(
+			$("<span/>").addClass("origin-local-header-note").text("\u261b Origin Local Time").attr("data-toggle", "tooltip").attr("title", "Times displayed in origins' timezones and listed in chronological order.").tooltip()
+		)
+	}
+	flightsViewTableHead.append(headerRow);
+
+
+	var numCols = $("#flights-view-table-head th").length
 
 	//Default to UTC time if selected airport has unknown TZ
 	var selectedAirportTZTitle;
@@ -164,6 +190,11 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 		
 		//Add rows for flights for that 24hr day
 		while (flights != null && f < flights.length) {
+			if (flights[f]['unknownRollCallDate']) {
+				f++
+				continue;
+			}
+
 			//Lookup origin airport location TZ offset
 			var airportTZTitle = presetTZTitles[presetLocations.indexOf(flights[f]['origin'])]
 

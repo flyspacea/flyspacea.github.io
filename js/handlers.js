@@ -40,5 +40,5 @@ function directionToggleSelected(direction) {
 	now.setHours(0, 0, 0, 0);
 	*/
 
-	updateFlightsView(selectedLocation, direction, now, 4)
+	updateFlightsView(selectedLocation, direction, now, daysLookupRange)
 }

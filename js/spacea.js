@@ -9,6 +9,8 @@ var presetTZTitles = []; //Preset location TZ titles
 var selectedLocation;
 //var selectedFlightDirection;
 
+var daysLookupRange = 4;
+
 var FlightDirectionEnum = {
 	departure : 1,
 	arrival : 2
@@ -46,7 +48,7 @@ function updateLocationDropdown() {
 				presetTZTitles.push(element['tzTitle']);
 			});
 
-			getDistinctLocations(
+			getDistinctLocations(moment().startOf('day'), daysLookupRange,
 				function(jqXHR, textStatus, errorThrown) { //error handler
 					showErrorRetry(textStatus + ' ' + errorThrown)
 				},
@@ -92,19 +94,15 @@ function getPresetLocations(errorHandler, successHandler, completionHandler) {
 	});
 }
 
-function getDistinctLocations(errorHandler, successHandler, completionHandler) {
+function getDistinctLocations(startDate, durationDays, errorHandler, successHandler, completionHandler) {
 	$.ajax({
 		url: backendBaseURL + backendDistinctLocationsHandler,
 		type: 'GET',
-		/*
 		data: {
-			'editorID': editorID,
-			'authToken': authToken,
-			'fileUUID': fileUUID,
-			'type': type,
-			'typeData': typeData
+			//toISOString() auto converts to zero UTC offset
+			'startTime': startDate.toISOString().split('.')[0]+"Z",
+			'durationDays': durationDays
 		},
-		*/
 		dataType: 'json', //auto JSON.parse()
 		cache: false,
 		success: successHandler,
