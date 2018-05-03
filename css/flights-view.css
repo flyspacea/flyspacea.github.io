@@ -30,3 +30,15 @@ tr.flights-view-date-table-row {
 td.no-flights {
 	font-style: italic;
 }
+
+td a:link {
+	text-decoration: none;
+}
+
+td a:visited {
+	text-decoration: none;
+}
+
+td a:hover {
+	text-decoration: none;
+}

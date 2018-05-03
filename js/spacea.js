@@ -1,10 +1,12 @@
 var backendBaseURL = "https://spacea.herokuapp.com"
 var backendDistinctLocationsHandler = '/locations';
 var backendFlightsHandler = '/flights';
+var backendSubmitPhotoReportsHandler = '/submitPhotoReport';
 
 var presetLocationsPath = 'assets/tz_export.json';
 var presetLocations = []; //Preset location titles
 var presetTZTitles = []; //Preset location TZ titles
+var presetKeywords = []; //Preset location keywords
 
 var selectedLocation;
 //var selectedFlightDirection;
@@ -19,9 +21,9 @@ var FlightDirectionEnum = {
 $(document).ready(function() {
 	updateLocationDropdown();
 
-	//Show some flights
+	//Show some flights for latest flights view
 	now = moment(); 
-	updateFlightsView('', FlightDirectionEnum.departure, now, 1)
+	updateFlightsView('', FlightDirectionEnum.departure, now, 2)
 });
 
 function updateError(title, callback) {
@@ -50,6 +52,7 @@ function updateLocationDropdown() {
 			data.forEach(function(element) {
 				presetLocations.push(element['title']);
 				presetTZTitles.push(element['tzTitle']);
+				presetKeywords.push(element['keywords']);
 			});
 
 			getDistinctLocations(moment().startOf('day'), daysLookupRange,
@@ -168,6 +171,23 @@ function getFlights(location, direction, startDate, durationDays, errorHandler, 
 			//toISOString() auto converts to zero UTC offset
 			'startTime': startDate.toISOString().split('.')[0]+"Z",
 			'durationDays': durationDays
+		},
+		dataType: 'json', //auto JSON.parse()
+		cache: false,
+		success: successHandler,
+		error: errorHandler,
+		complete: completionHandler
+	});
+}
+
+function submitPhotoReport(location, photoSource, comment, errorHandler, successHandler, completionHandler) {
+	$.ajax({
+		url: backendBaseURL + backendSubmitPhotoReportsHandler,
+		type: 'POST',
+		data: {
+			'location': location,
+			'photoSource': photoSource,
+			'comment': comment
 		},
 		dataType: 'json', //auto JSON.parse()
 		cache: false,

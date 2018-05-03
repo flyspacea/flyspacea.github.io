@@ -10,9 +10,12 @@ var flightsViewTable;
 var flightsViewTableHead;
 var flightsViewTableBody;
 
+var photoReportModal;
+
 function setUIVariables() {
 	locationDropdownBtn = $("#location-dropdown-btn")
-	locationDropdownMenuHeader = $("#location-dropdown-menu-header")
+	//Uncomment for bootstrap dropdown menu
+	//locationDropdownMenuHeader = $("#location-dropdown-menu-header")
 	directionToggleBtns = $('#direction-toggle-btn-group > label')
 	progressBarRow = $("#progress-bar-row")
 	progressBarText = $("#progress-bar-row>div>div>div>span")
@@ -23,9 +26,22 @@ function setUIVariables() {
 	arrivalToggleButtonLabel = $("#arrivals-label")
 	departureToggleButtonLabel = $("#departures-label")
 
-	addLocationDropdownTooltip()
-	setupToggleHandlers()
+	photoReportModal = $('#photoReportModal')
 
+	//Uncomment for bootstrap dropdown menu
+	//addLocationDropdownTooltip()
+	setupLocationDropdownSelectHandler()
+	setupToggleHandlers()
+	setupPhotoReportModal()
+}
+
+//For bootstrap-select menu
+function setupLocationDropdownSelectHandler() {
+	locationDropdownBtn.off('change');
+
+	locationDropdownBtn.on('change', function(event) {
+		dropdownItemSelected(event.target.options[event.target.selectedIndex].getAttribute('value'))
+	});
 }
 
 function setupToggleHandlers() {
@@ -43,6 +59,51 @@ function setupToggleHandlers() {
 
 }
 
+function setupPhotoReportModal() {
+	photoReportModal.off('change');
+
+	//Handle showing modal and event handlers for actions
+	photoReportModal.on('show.bs.modal', function (event) {
+	  var button = $(event.relatedTarget) 
+	  var photoLocation = button.data('location')
+	  var photoSource = button.data('photoSource') 
+	  
+	  var modal = $(this)
+	  //modal.find('.modal-title').text('New message to ' + recipient)
+	  //modal.find('.modal-body input').val(recipient)
+	  photoReportModal.find('#reportSubmit').off('click');
+		photoReportModal.find('#reportSubmit').on('click', function(event) {
+			photoReportModal.find('#reportSubmit').addClass('disabled');
+			photoReportModal.find('#reportSubmit').text('Sending');
+
+			submitPhotoReport(photoLocation, photoSource, modal.find('#message-text').val(), 
+				function(jqXHR, textStatus, errorThrown) { //error handler
+					alert("Could not submit report. Issue: " + textStatus + errorThrown);
+				},
+				function(data, textStatus, jqXHR) { //success handler
+					console.log(data)
+					switch(data['status']) {
+						case 0:
+							modal.modal('hide')
+							break;
+						default:
+							alert("Could not submit report. Server issues. " + data['error'])
+					}
+				},
+				function(jqXHR, textStatus) { //completion handler
+					console.log('completion');
+					photoReportModal.find('#reportSubmit').removeClass('disabled');
+					photoReportModal.find('#reportSubmit').text('Submit');
+				}
+			);
+		});
+	});
+
+
+}
+
+
+
 function addLocationDropdownTooltip() {
 	locationDropdownMenuHeader.attr("data-toggle", "tooltip").attr("title", "Only listing terminals with flights within 72 hours.").tooltip({
 		trigger: 'hover'
@@ -59,10 +120,21 @@ function disableAllUI() {
 }
 
 function setLocationDropdownBtnState(enabled) {
+	/*
+	//Uncomment for bootstrap dropdown menu
 	if (enabled) {
 		locationDropdownBtn.removeClass("disabled")
 	} else {
 		locationDropdownBtn.addClass("disabled")
+	}
+	*/
+
+	if (enabled) {
+		locationDropdownBtn.prop('disabled', false);
+		locationDropdownBtn.selectpicker('refresh');
+	} else {
+		locationDropdownBtn.prop('disabled', true);
+		locationDropdownBtn.selectpicker('refresh');
 	}
 }
 
@@ -131,6 +203,8 @@ function setDropdownTitle(title) {
  * Set dropdown text click handler for each menu option.
  */
 function setLocationsInDropdown(locations) {
+	/*
+	//For bootstrap dropdown menu
 	//Remove past location dropdown menu items
 	$("#location-dropdown-btn-group > .dropdown-menu  > a").each(
 		function(index, element) {
@@ -146,6 +220,47 @@ function setLocationsInDropdown(locations) {
 			})
 		)
 	});
+	*/
+
+	//Clear bootstrap-select picker
+	locationDropdownBtn.empty();
+
+	locationDropdownBtn.append(
+		$("<option/>").val("").text("Latest Flights")
+	);
+
+
+	var optgrp = $("<optgroup/>").attr("label", "\u2139 72 HR flight locations ");
+
+	locations.forEach(function(element) {
+
+		var locationOpt = $("<option/>").val(element).text(element);
+
+		//If location is in preset location list, show indicator for departure flight
+		locationOpt.text('\u00a0\ud83d\udeec ' + locationOpt.text())
+		if (presetLocations.indexOf(element) > 0) {
+			locationOpt.text('\ud83d\udeeb' + locationOpt.text())
+
+			var keywordListString;
+			presetKeywords[presetLocations.indexOf(element)].forEach(function(element) {
+				keywordListString += element + ' ';
+			});
+			locationOpt.attr('data-tokens', keywordListString) //item keywords for live search
+		} else {
+			locationOpt.text('\u20e0' + locationOpt.text())
+		}
+
+		optgrp.append(
+			locationOpt
+		);
+	});
+
+	locationDropdownBtn.append(optgrp);
+	locationDropdownBtn.selectpicker('render');
+
+	//update variable references and add tooltip to dropdown menu header
+	setUIVariables(); 
+
 }
 
 /*
@@ -179,11 +294,11 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 		//Add seats column
 		var seatText = flight['seatCount'].toString();
 		if (flight['seatType'].toUpperCase() == 'T')
-			seatText += " Tentative";
+			seatText += " T";
 		else if (flight['seatType'].toUpperCase() == 'F')
-			seatText += " Firm";
+			seatText += " F";
 		else if (flight['seatType'].toUpperCase() == 'SP')
-			seatText = "Pending";
+			seatText = "SP";
 		else
 			seatText = "N/A";
 
@@ -191,9 +306,25 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 			$("<td/>").addClass("").text(seatText)
 		)
 
+		var photoURL = 'https://www.facebook.com/' + flight['photoSource'];
+
 		//Add source column
 		flightRow.append(
-			$("<td/>").addClass("").text("")
+			$("<td/>").addClass("").append(
+				$("<a/>").addClass("btn btn-primary").attr('title', 'View Facebook Source Image').attr('target', 'popup')
+					.attr('onclick', 'window.open(\'' + photoURL + '\',\'popup\',\'width=1000,height=800\'); return false;')
+					.attr('href', photoURL)
+					.text('\ud83d\udd0d'),
+					'&nbsp;',
+				$("<button/>").attr('type', 'button')
+					.addClass('btn btn-warning')
+					.attr('title', 'Submit Flight Data Report')
+					.attr('data-toggle', 'modal')
+					.attr('data-target', '#photoReportModal')
+					.attr('data-location', location.length > 0 ? location : flight['origin'])
+					.attr('data-photoSource', flight['photoSource'])
+					.text('\ud83d\udee0')
+			)
 		)
 
 		return flightRow;
@@ -209,15 +340,15 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 		$("<th/>").attr("scope", "col").text("Roll Call"),
 		location.length == 0 ? $("<th/>").attr("scope", "col").text("Origin") : $("<meta/>"), //only insert origin column if location is blank which indicates latest flights overview
 		$("<th/>").attr("scope", "col").text(direction == FlightDirectionEnum.departure ? "Destination" : "Origin"),
-		$("<th/>").attr("scope", "col").text("Seats"),
-		$("<th/>").attr("scope", "col").text("\u2026") //horizontal ellipsis
+		$("<th/>").attr("scope", "col").text("Seats").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", 'T = Tentative<br/>F = Firm<br/>SP = Seats Pending.').tooltip(),
+		$("<th/>").attr("scope", "col").text("Source \u26A0").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", 'Source images may no longer be online.').tooltip()
 	)
 
-	//Add tooltip explaining origin roll call times for arrival view
-	if (direction == FlightDirectionEnum.arrival) {
+	//Add tooltip explaining origin roll call times for arrival view or latest flights view
+	if (direction == FlightDirectionEnum.arrival || location.length == 0) {
 		headerRow.children(":first-child").text("Roll Call ")
 		headerRow.children(":first-child").append(
-			$("<span/>").addClass("origin-local-header-note").text("\u261b Origin Local Time").attr("data-toggle", "tooltip").attr("title", "Times displayed in origins' timezones and listed in chronological order.").tooltip()
+			$("<span/>").addClass("origin-local-header-note").text("\u26A0 Special Ordering").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", '-&nbsp;Dates grouped by local timezone. <span style="font-style:italic;">' + moment().tz(moment.tz.guess()).format('z ZZ') + '</span></br>-&nbsp;Roll Call times displayed in origins\' timezones.</br>-&nbsp;Flights listed in chronological order.').tooltip()
 		)
 	}
 	flightsViewTableHead.append(headerRow);
@@ -225,15 +356,14 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 
 	var numCols = $("#flights-view-table-head th").length
 
-	//Default to UTC time if selected airport has unknown TZ
+	//Display dates by  selected airport TZ or comoputer local TZ
 	var selectedAirportTZTitle;
 	var selectedAirportIndex = presetLocations.indexOf(location)
 	if (selectedAirportIndex > 0) {
 		selectedAirportTZTitle = presetTZTitles[selectedAirportIndex]
-	} else {
-		selectedAirportTZTitle = "Etc/UTC";
-	}
-	startDate.tz(selectedAirportTZTitle).startOf('day');
+		startDate.tz(selectedAirportTZTitle)
+	} 
+	startDate.startOf('day');
 
 	var f = 0;
 	for (d = 0; d < durationDays; d++) {

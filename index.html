@@ -5,12 +5,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-select.min.css" rel="stylesheet">
+
 	<link href="css/style.css" rel="stylesheet">
 	<link href="css/location-dropdown.css" rel="stylesheet">
 	<link href="css/flights-view.css" rel="stylesheet">
 
 	<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap-select.min.js"></script>
+	
 
 	<script type="text/javascript" src="js/moment-with-locales.min.js"></script>
 	<script type="text/javascript" src="js/moment-timezone-with-data.min.js"></script>
@@ -24,6 +28,7 @@
 	<div class="container" id="flights-container">
 		<div class="row" id="flights-filter-row">
 			<div class="col-sm-6">
+			<!-- Uncomment to use bootstrap dropdown menu + uncomment commented code in ui-states.js
 				<div class="btn-group" id="location-dropdown-btn-group">
 					<button class="btn btn-secondary btn-lg dropdown-toggle disabled" id="location-dropdown-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>&#x2026;</span></button>
 
@@ -33,6 +38,13 @@
 						<a class="dropdown-item" href="#">&#x2026;</a>
 					</div>
 				</div>
+			-->
+			<div id="location-dropdown-btn-group">
+			<select class="selectpicker" id="location-dropdown-btn" data-width="100%" data-style="btn-primary" data-live-search="true" title="Select Space-A Location Here">
+			  <option value="">Latest Flights</option>
+			</select>
+		</div>
+
 			</div>
 			<div class="col-sm-6">
 				<div class="btn-group btn-group-toggle" id="direction-toggle-btn-group" data-toggle="buttons">
@@ -62,8 +74,8 @@
 				</div>
 			</div>
 			<div class="row" id="flights-view-row">
-				<div class="col col-offset-1">
-					<table class="table-responsive disabled" id="flights-view-table">
+				<div class="col col-offset-1 table-responsive">
+					<table class="table disabled" id="flights-view-table">
 						<thead id="flights-view-table-head">
 							<tr>
 								<th scope="col">Roll Call</th>
@@ -73,6 +85,7 @@
 							</tr>
 						</thead>
 						<tbody id="flights-view-table-body">
+							<!--
 							<tr class="flights-view-date-table-row">
 								<th>&#x2026;</th>
 								<td></td>
@@ -91,6 +104,7 @@
 								<td>&#x2026;</td>
 								<td>&#x2026;</td>
 							</tr>
+						-->
 							<tr>
 								<th>&#x2026;</th>
 								<td>&#x2026;</td>
@@ -102,5 +116,28 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- Modal -->
+<div class="modal fade" id="photoReportModal" tabindex="-1" role="dialog" aria-labelledby="photoReportModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="photoReportModalLabel">Report Flight Data Issue</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+            <label for="message-text" class="col-form-label">List missing/wrong locations or other issue:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="reportSubmit">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
 	</body>
 	</html>

@@ -2,6 +2,9 @@
 
 }
 
+/* For bootstrap dropdown menu */
+/* For bootstrap-select dropdown menu */
+/* Styles the parent div of #location-dropdown-btn */
 #location-dropdown-btn-group {
 	margin-top: 20px;
 	width: 100%;
@@ -11,6 +14,7 @@
 	width: 100%;
 }
 
+/* For bootstrap dropdown menu */
 #location-dropdown-btn > span {
 	display: inline-block;
 	width: 80%;
@@ -30,6 +34,13 @@
 
 .dropdown-item.gray-tint {
   box-shadow: 0px 2em rgba(0, 0, 0, 0.1) inset;
+}
+
+.dropdown-item-no-entry {
+	padding-left: 2.25em;
+    z-index: 505;
+    position: absolute;
+    left: 0;
 }
 
 #direction-toggle-btn-group {
