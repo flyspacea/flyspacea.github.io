@@ -43,6 +43,11 @@
     left: 0;
 }
 
+#location-options-btn-group {
+	margin-top: 20px;
+	width: 100%;
+}
+
 #direction-toggle-btn-group {
 	margin-top: 20px;
 	width: 100%;

@@ -42,3 +42,7 @@ td a:visited {
 td a:hover {
 	text-decoration: none;
 }
+
+td.source-row .btn {
+	font-size: 0.5rem;
+}

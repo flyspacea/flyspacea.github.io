@@ -7,9 +7,11 @@ var presetLocationsPath = 'assets/tz_export.json';
 var presetLocations = []; //Preset location titles
 var presetTZTitles = []; //Preset location TZ titles
 var presetKeywords = []; //Preset location keywords
+var presetFBIds = []; //Preset location FB ids
 
 var selectedLocation;
 //var selectedFlightDirection;
+var kLatestFlights = "latestFlights"
 
 var daysLookupRange = 4;
 
@@ -21,10 +23,28 @@ var FlightDirectionEnum = {
 $(document).ready(function() {
 	updateLocationDropdown();
 
-	//Show some flights for latest flights view
-	now = moment(); 
-	updateFlightsView('', FlightDirectionEnum.departure, now, 2)
+	flashDropdownTooltip();
 });
+
+//Check location hash to load any locations from sharing
+function checkLocationHash() {
+	try {
+		var hashSplit = decodeURI(location.hash).split('#')
+		if (hashSplit.length < 2)
+			return false
+		var hash = hashSplit[1]
+		console.log(hash)
+		if (hash.length > 0) { //Check if location hash exists
+			if ($.inArray(hash, presetLocations) != -1){ //Check if location is preset location
+				setDropdownTitle(hash);
+				return true
+			} 
+		}
+	} catch (e) {
+		console.log('invalid URI in location.hash ' + location.hash)
+	}
+	return false
+}
 
 function updateError(title, callback) {
 	showProgressBarWithText(title);
@@ -53,6 +73,7 @@ function updateLocationDropdown() {
 				presetLocations.push(element['title']);
 				presetTZTitles.push(element['tzTitle']);
 				presetKeywords.push(element['keywords']);
+				presetFBIds.push(element['id']);
 			});
 
 			getDistinctLocations(moment().startOf('day'), daysLookupRange,
@@ -69,22 +90,28 @@ function updateLocationDropdown() {
 								console.log('no locations flights on server');
 								showErrorRetry('Invalid data from server. Server Status ' + data['status'])
 							}
-
 							hideProgressBar();
 							setLocationDropdownBtnState(true);
-							setDropdownTitle('Latest Flights');
+
+							if (!checkLocationHash()) {
+									//Show some flights for latest flights view
+									now = moment(); 
+									//updateFlightsView('', FlightDirectionEnum.departure, now, 2)
+									setDropdownTitle(kLatestFlights);
+								}
+							
 							break;
 						default:
 							showErrorRetry('Invalid data from server.')
 					}
 				},
 				function(jqXHR, textStatus) { //completion handler
-					console.log('completion');
+					console.log('completion distinct locations');
 				}
 			);
 		},
 		function(jqXHR, textStatus) { //completion handler
-			console.log('completion');
+			console.log('completion preset locations');
 		}
 	);
 }
@@ -157,6 +184,7 @@ function updateFlightsView(location, direction, startDate, durationDays) {
 		},
 		function(jqXHR, textStatus) { //completion handler
 			console.log('completion');
+			console.log(locationDropdownBtn.val())
 		}
 	);
 }

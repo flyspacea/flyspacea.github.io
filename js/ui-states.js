@@ -12,6 +12,9 @@ var flightsViewTableBody;
 
 var photoReportModal;
 
+var terminalFBPageBtn;
+var terminalFBPageTitle;
+
 function setUIVariables() {
 	locationDropdownBtn = $("#location-dropdown-btn")
 	//Uncomment for bootstrap dropdown menu
@@ -28,6 +31,10 @@ function setUIVariables() {
 
 	photoReportModal = $('#photoReportModal')
 
+	terminalFBPageBtn = $('#terminal-facebook-page-btn')
+	terminalFBPageTitle = $('#terminal-facebook-page-title')
+
+
 	//Uncomment for bootstrap dropdown menu
 	//addLocationDropdownTooltip()
 	setupLocationDropdownSelectHandler()
@@ -37,10 +44,10 @@ function setUIVariables() {
 
 //For bootstrap-select menu
 function setupLocationDropdownSelectHandler() {
-	locationDropdownBtn.off('change');
+	locationDropdownBtn.off('changed.bs.select');
 
-	locationDropdownBtn.on('change', function(event) {
-		dropdownItemSelected(event.target.options[event.target.selectedIndex].getAttribute('value'))
+	locationDropdownBtn.on('changed.bs.select', function(event) {
+		dropdownItemSelected(locationDropdownBtn.val())
 	});
 }
 
@@ -50,17 +57,17 @@ function setupToggleHandlers() {
 
 	departureToggleButtonLabel.on('click', function(event) {
 		if (!departureToggleButtonLabel.hasClass('disabled'))
-			directionToggleSelected(FlightDirectionEnum.departure);
+			directionToggleSelected(FlightDirectionEnum.departure, locationDropdownBtn.val());
 	});
 	arrivalToggleButtonLabel.on('click', function(event) {
 		if (!arrivalToggleButtonLabel.hasClass('disabled'))
-			directionToggleSelected(FlightDirectionEnum.arrival);
+			directionToggleSelected(FlightDirectionEnum.arrival, locationDropdownBtn.val());
 	});
 
 }
 
 function setupPhotoReportModal() {
-	photoReportModal.off('change');
+	photoReportModal.off('show.bs.modal');
 
 	//Handle showing modal and event handlers for actions
 	photoReportModal.on('show.bs.modal', function (event) {
@@ -71,10 +78,20 @@ function setupPhotoReportModal() {
 	  var modal = $(this)
 	  //modal.find('.modal-title').text('New message to ' + recipient)
 	  //modal.find('.modal-body input').val(recipient)
-	  photoReportModal.find('#reportSubmit').off('click');
-		photoReportModal.find('#reportSubmit').on('click', function(event) {
-			photoReportModal.find('#reportSubmit').addClass('disabled');
-			photoReportModal.find('#reportSubmit').text('Sending');
+
+	  //Add handler for textarea to enable submit button when typed in
+	  //Initially disable submit button
+	  //https://stackoverflow.com/questions/11338592/how-can-i-bind-to-the-change-event-of-a-textarea-in-jquery
+	  modal.find('#reportSubmit').prop('disabled', true)
+	  modal.find('#message-text').off('input selectionchange propertychange');
+	  modal.find('#message-text').on('input selectionchange propertychange', function() {
+	  	modal.find('#reportSubmit').prop('disabled', this.value.length === 0)
+	  });
+
+	  modal.find('#reportSubmit').off('click');
+		modal.find('#reportSubmit').on('click', function(event) {
+			modal.find('#reportSubmit').addClass('disabled');
+			modal.find('#reportSubmit').text('Sending');
 
 			submitPhotoReport(photoLocation, photoSource, modal.find('#message-text').val(), 
 				function(jqXHR, textStatus, errorThrown) { //error handler
@@ -92,8 +109,8 @@ function setupPhotoReportModal() {
 				},
 				function(jqXHR, textStatus) { //completion handler
 					console.log('completion');
-					photoReportModal.find('#reportSubmit').removeClass('disabled');
-					photoReportModal.find('#reportSubmit').text('Submit');
+					modal.find('#reportSubmit').removeClass('disabled');
+					modal.find('#reportSubmit').text('Submit');
 				}
 			);
 		});
@@ -194,9 +211,26 @@ function hideProgressBar() {
 		});
 }
 
-function setDropdownTitle(title) {
-	$("#location-dropdown-btn > span").text(title);
+function flashDropdownTooltip() {
+	locationDropdownBtn.tooltip('show');
+	window.setTimeout(function() {
+		locationDropdownBtn.tooltip('hide');
+	}, 3000);
 }
+
+/*
+ * Entry point for any programmatic flight location changes if you want dropdown menu text to match the set location. 
+ * Else call dropdownItemSelected()
+ */
+
+function setDropdownTitle(title) {
+	/*
+	//For bootstrap dropdown menu
+	$("#location-dropdown-btn > span").text(title);
+	*/
+	locationDropdownBtn.selectpicker('val', title)
+}
+
 
 /*
  * Set location dropdown menu options to locations array.
@@ -226,11 +260,11 @@ function setLocationsInDropdown(locations) {
 	locationDropdownBtn.empty();
 
 	locationDropdownBtn.append(
-		$("<option/>").val("").text("Latest Flights")
+		$("<option/>").val(kLatestFlights).text("Latest Flights")
 	);
 
 
-	var optgrp = $("<optgroup/>").attr("label", "\u2139 72 HR flight locations ");
+	var optgrp = $("<optgroup/>").attr("label", "72 HR flight locations ");
 
 	locations.forEach(function(element) {
 
@@ -241,13 +275,14 @@ function setLocationsInDropdown(locations) {
 		if (presetLocations.indexOf(element) > 0) {
 			locationOpt.text('\ud83d\udeeb' + locationOpt.text())
 
+			//Set item keywords for live search
 			var keywordListString;
 			presetKeywords[presetLocations.indexOf(element)].forEach(function(element) {
 				keywordListString += element + ' ';
 			});
-			locationOpt.attr('data-tokens', keywordListString) //item keywords for live search
+			locationOpt.attr('data-tokens', keywordListString) 
 		} else {
-			locationOpt.text('\u20e0' + locationOpt.text())
+			locationOpt.text('\ud83d\udeab' + locationOpt.text())
 		}
 
 		optgrp.append(
@@ -310,12 +345,12 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 
 		//Add source column
 		flightRow.append(
-			$("<td/>").addClass("").append(
-				$("<a/>").addClass("btn btn-primary").attr('title', 'View Facebook Source Image').attr('target', 'popup')
+			$("<td/>").addClass("source-row").append(
+				$("<div/>").addClass("btn-group").attr("role", "group").attr("aria-label", "Flight options").append(
+					$("<button/>").attr('type', 'button').addClass("btn btn-primary").attr('title', 'View Facebook Source Image').attr('target', 'popup')
 					.attr('onclick', 'window.open(\'' + photoURL + '\',\'popup\',\'width=1000,height=800\'); return false;')
 					.attr('href', photoURL)
 					.text('\ud83d\udd0d'),
-					'&nbsp;',
 				$("<button/>").attr('type', 'button')
 					.addClass('btn btn-warning')
 					.attr('title', 'Submit Flight Data Report')
@@ -324,6 +359,7 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 					.attr('data-location', location.length > 0 ? location : flight['origin'])
 					.attr('data-photoSource', flight['photoSource'])
 					.text('\ud83d\udee0')
+				)
 			)
 		)
 
@@ -340,15 +376,15 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 		$("<th/>").attr("scope", "col").text("Roll Call"),
 		location.length == 0 ? $("<th/>").attr("scope", "col").text("Origin") : $("<meta/>"), //only insert origin column if location is blank which indicates latest flights overview
 		$("<th/>").attr("scope", "col").text(direction == FlightDirectionEnum.departure ? "Destination" : "Origin"),
-		$("<th/>").attr("scope", "col").text("Seats").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", 'T = Tentative<br/>F = Firm<br/>SP = Seats Pending.').tooltip(),
-		$("<th/>").attr("scope", "col").text("Source \u26A0").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", 'Source images may no longer be online.').tooltip()
+		$("<th/>").attr("scope", "col").html("Seats&nbsp;<sup>[?]</sup>").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", 'T = Tentative<br/>F = Firm<br/>SP = Seats Pending.').tooltip(),
+		$("<th/>").attr("scope", "col").html("Actions&nbsp;<sup>[?]</sup>").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", '\ud83d\udd0d&nbsp;Flight source images.<br/>Source images may no longer be online depending on when terminal pages are updated.').tooltip()
 	)
 
 	//Add tooltip explaining origin roll call times for arrival view or latest flights view
 	if (direction == FlightDirectionEnum.arrival || location.length == 0) {
 		headerRow.children(":first-child").text("Roll Call ")
 		headerRow.children(":first-child").append(
-			$("<span/>").addClass("origin-local-header-note").text("\u26A0 Special Ordering").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", '-&nbsp;Dates grouped by local timezone. <span style="font-style:italic;">' + moment().tz(moment.tz.guess()).format('z ZZ') + '</span></br>-&nbsp;Roll Call times displayed in origins\' timezones.</br>-&nbsp;Flights listed in chronological order.').tooltip()
+			$("<span/>").addClass("origin-local-header-note").html(" Special&nbsp;Ordering&nbsp;<sup>[?]</sup>").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", '\ud83d\udccd&nbsp;Dates grouped by local timezone. <span style="font-style:italic;">' + moment().tz(moment.tz.guess()).format('z ZZ') + '</span></br>\ud83c\udf10&nbsp;Roll Call times displayed in origins\' timezones.</br>\u23f0&nbsp;Flights listed in chronological order.').tooltip()
 		)
 	}
 	flightsViewTableHead.append(headerRow);
@@ -447,7 +483,7 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 				//Create date row
 				var dateRow = $("<tr/>").addClass("flights-view-date-table-row")
 				dateRow.append(
-					$("<th/>").addClass("").text("Possible flights \u26a0").attr("data-toggle", "tooltip").attr("data-placement", "right").attr("title", "Flights that were found with a low confidence date and time.").tooltip()
+					$("<th/>").addClass("").html("Possible flights&nbsp;<sup style=\"font-size: .5em\">[?]</sup>").attr("data-toggle", "tooltip").attr("data-placement", "right").attr("title", "Flights that were found with a low confidence date and time.").tooltip()
 				)
 
 				//Add blank <td> row col elements to match number of columns in table
