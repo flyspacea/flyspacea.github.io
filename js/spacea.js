@@ -1,4 +1,4 @@
-var backendBaseURL = "https://spacea.herokuapp.com"
+var backendBaseURL = (location.protocol == "http:" ? "http:" : "https:") + "//spacea.herokuapp.com"
 var backendDistinctLocationsHandler = '/locations';
 var backendFlightsHandler = '/flights';
 var backendSubmitPhotoReportsHandler = '/submitPhotoReport';

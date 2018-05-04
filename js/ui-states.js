@@ -14,6 +14,8 @@ var photoReportModal;
 
 var terminalFBPageBtn;
 var terminalFBPageTitle;
+var emailTemplateBtn;
+var emailTemplateModal;
 
 function setUIVariables() {
 	locationDropdownBtn = $("#location-dropdown-btn")
@@ -33,6 +35,8 @@ function setUIVariables() {
 
 	terminalFBPageBtn = $('#terminal-facebook-page-btn')
 	terminalFBPageTitle = $('#terminal-facebook-page-title')
+	emailTemplateBtn = $('#email-template-btn')
+	emailTemplateModal = $('#emailTemplateModal')
 
 
 	//Uncomment for bootstrap dropdown menu
@@ -40,6 +44,8 @@ function setUIVariables() {
 	setupLocationDropdownSelectHandler()
 	setupToggleHandlers()
 	setupPhotoReportModal()
+
+	setEmailTemplateLinkAndModal()
 }
 
 //For bootstrap-select menu
@@ -115,11 +121,30 @@ function setupPhotoReportModal() {
 			);
 		});
 	});
-
-
 }
 
+//Setup email template link and modal
+function setEmailTemplateLinkAndModal() {
+	emailTemplateBtn.off('click');
+	emailTemplateBtn.on('click', function() {
+	});
 
+	emailTemplateModal.off('show.bs.modal');
+
+	//Handle showing modal and event handlers for actions
+	emailTemplateModal.on('show.bs.modal', function (event) {
+	  var button = $(event.relatedTarget) 
+	  
+	  var modal = $(this)
+	  //modal.find('.modal-title').text('New message to ' + recipient)
+	  //modal.find('.modal-body input').val(recipient)
+
+	  //Add handler for textarea to enable submit button when typed in
+	  //Initially disable submit button
+	  //https://stackoverflow.com/questions/11338592/how-can-i-bind-to-the-change-event-of-a-textarea-in-jquery
+	  modal.find('#message-text').text(emailTemplate);
+  });
+}
 
 function addLocationDropdownTooltip() {
 	locationDropdownMenuHeader.attr("data-toggle", "tooltip").attr("title", "Only listing terminals with flights within 72 hours.").tooltip({
@@ -377,7 +402,7 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 		location.length == 0 ? $("<th/>").attr("scope", "col").text("Origin") : $("<meta/>"), //only insert origin column if location is blank which indicates latest flights overview
 		$("<th/>").attr("scope", "col").text(direction == FlightDirectionEnum.departure ? "Destination" : "Origin"),
 		$("<th/>").attr("scope", "col").html("Seats&nbsp;<sup>[?]</sup>").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", 'T = Tentative<br/>F = Firm<br/>SP = Seats Pending.').tooltip(),
-		$("<th/>").attr("scope", "col").html("Actions&nbsp;<sup>[?]</sup>").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", '\ud83d\udd0d&nbsp;Flight source images.<br/>Source images may no longer be online depending on when terminal pages are updated.').tooltip()
+		$("<th/>").attr("scope", "col").html("Source&nbsp;<sup>[?]</sup>").attr("data-toggle", "tooltip").attr("data-html", "true").attr("title", '\ud83d\udd0d&nbsp;Flight source images.<br/>Source images may no longer be online depending on when terminal pages are updated.').tooltip()
 	)
 
 	//Add tooltip explaining origin roll call times for arrival view or latest flights view
