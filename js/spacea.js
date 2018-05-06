@@ -22,8 +22,6 @@ var FlightDirectionEnum = {
 
 $(document).ready(function() {
 	updateLocationDropdown();
-
-	flashDropdownTooltip();
 });
 
 //Check location hash to load any locations from sharing
@@ -92,13 +90,15 @@ function updateLocationDropdown() {
 							}
 							hideProgressBar();
 							setLocationDropdownBtnState(true);
-
 							if (!checkLocationHash()) {
-									//Show some flights for latest flights view
-									now = moment(); 
-									//updateFlightsView('', FlightDirectionEnum.departure, now, 2)
-									setDropdownTitle(kLatestFlights);
-								}
+								//Show some flights for latest flights view
+								now = moment(); 
+								//updateFlightsView('', FlightDirectionEnum.departure, now, 2)
+								setDropdownTitle(kLatestFlights);
+							}
+
+							//Start flashing tooltip after setting the initial dropdown value
+							flashLocationDropdownTooltip(true);
 							
 							break;
 						default:

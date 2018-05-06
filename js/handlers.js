@@ -5,7 +5,7 @@ function dropdownItemSelected(title) {
 
 	//Set terminal fb page link as needed
 	var link = 'https://facebook.com/flyspacea'
-	var terminalIndex = $.inArray(title, presetLocations)
+	var terminalIndex = presetLocations.indexOf(title)
 	terminalFBPageTitle.text('Fly Space-A')
 	if (terminalIndex > -1) {
 		if (presetFBIds[terminalIndex].length > 0) {
@@ -40,7 +40,8 @@ function dropdownItemSelected(title) {
 	arrivalToggleButtonLabel.button('toggle');
 	//selectedFlightDirection = FlightDirectionEnum.arrival;
 
-	if (title.length == 0 || $.inArray(title, presetLocations) != -1){
+	//If latest flights or a preset location, "select" departure toggle and trigger handler
+	if (title.length == 0 || presetLocations.indexOf(title) > -1){
 		departureToggleButtonLabel.button('toggle');
 		//selectedFlightDirection = FlightDirectionEnum.departure;
 

@@ -1,4 +1,5 @@
 var locationDropdownBtn;
+var flashLocationDropdownTooltipStatus = false;
 var locationDropdownMenuHeader;
 var directionToggleBtns;
 var arrivalToggleButtonLabel;
@@ -54,7 +55,17 @@ function setupLocationDropdownSelectHandler() {
 
 	locationDropdownBtn.on('changed.bs.select', function(event) {
 		dropdownItemSelected(locationDropdownBtn.val())
+		flashLocationDropdownTooltip(false);
 	});
+
+	/*
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+	  
+	}
+	*/
+	//Set mobile picker for smaller screens
+	if (screen.width < 650)
+		locationDropdownBtn.selectpicker('mobile');
 }
 
 function setupToggleHandlers() {
@@ -174,6 +185,7 @@ function setLocationDropdownBtnState(enabled) {
 	if (enabled) {
 		locationDropdownBtn.prop('disabled', false);
 		locationDropdownBtn.selectpicker('refresh');
+		locationDropdownBtn.selectpicker('setStyle', 'btn-primary');
 	} else {
 		locationDropdownBtn.prop('disabled', true);
 		locationDropdownBtn.selectpicker('refresh');
@@ -236,11 +248,24 @@ function hideProgressBar() {
 		});
 }
 
-function flashDropdownTooltip() {
-	locationDropdownBtn.tooltip('show');
-	window.setTimeout(function() {
-		locationDropdownBtn.tooltip('hide');
-	}, 3000);
+function flashLocationDropdownTooltip(enable) {
+	if (enable) {
+		flashLocationDropdownTooltipStatus = true
+		locationDropdownBtn.tooltip('show');
+		window.setTimeout(function() {
+			locationDropdownBtn.tooltip('hide');
+			//Set timeout to reflash
+			window.setTimeout(function() {
+				if (flashLocationDropdownTooltipStatus == true)
+					flashLocationDropdownTooltip(true)
+				else
+					locationDropdownBtn.tooltip('hide')
+			}, 3000);
+		}, 1000);
+	} else {
+		flashLocationDropdownTooltipStatus = false
+		locationDropdownBtn.tooltip('hide')
+	}
 }
 
 /*
@@ -296,9 +321,10 @@ function setLocationsInDropdown(locations) {
 		var locationOpt = $("<option/>").val(element).text(element);
 
 		//If location is in preset location list, show indicator for departure flight
-		locationOpt.text('\u00a0\ud83d\udeec ' + locationOpt.text())
-		if (presetLocations.indexOf(element) > 0) {
-			locationOpt.text('\ud83d\udeeb' + locationOpt.text())
+		//Create title string from end first.
+		locationOpt.text('\u00a0\ud83d\udeec ' + locationOpt.text()) //Add arriving plane
+		if (presetLocations.indexOf(element) > -1) {
+			locationOpt.text('\ud83d\udeeb' + locationOpt.text()) //Add departing plane
 
 			//Set item keywords for live search
 			var keywordListString;
@@ -307,7 +333,7 @@ function setLocationsInDropdown(locations) {
 			});
 			locationOpt.attr('data-tokens', keywordListString) 
 		} else {
-			locationOpt.text('\ud83d\udeab' + locationOpt.text())
+			locationOpt.text('\ud83d\udeab' + locationOpt.text()) //Add no entry sign
 		}
 
 		optgrp.append(
