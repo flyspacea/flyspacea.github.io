@@ -64,8 +64,8 @@ function setupLocationDropdownSelectHandler() {
 	}
 	*/
 	//Set mobile picker for smaller screens
-	if (screen.width < 650)
-		locationDropdownBtn.selectpicker('mobile');
+	//if (screen.width < 650)
+	//	locationDropdownBtn.selectpicker('mobile');
 }
 
 function setupToggleHandlers() {
