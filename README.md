@@ -2,6 +2,8 @@
 
 A frontend application that displays upcoming [US Air Force AMC Space-A](http://www.amc.af.mil/Home/AMC-Travel-Site/) flights.
 
+![flyspacea animated demo gif](https://github.com/flyspacea/flyspacea.github.io/raw/master/assets/demo/demo.gif)
+
 ## What is Space-A? Who is this for?
 
 Space Available flight is a privilege for members of the US DoD to be transported on DoD aircraft when capacity allows. Space-A may sometimes be referred to as to "take a hop". See the [US Air Force AMC Space-A website](http://www.amc.af.mil/Home/AMC-Travel-Site/) for more information on eligibility. 
