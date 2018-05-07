@@ -6,7 +6,7 @@ A frontend application that displays upcoming [US Air Force AMC Space-A](http://
 
 ## What is Space-A? Who is this for?
 
-Space Available flight is a privilege for members of the US DoD to be transported on DoD aircraft when capacity allows. Space-A may sometimes be referred to as to "take a hop". See the [US Air Force AMC Space-A website](http://www.amc.af.mil/Home/AMC-Travel-Site/) for more information on eligibility. 
+Space Available flight is a privilege for members of the US DoD to be transported on DoD aircraft when capacity allows. Travelling space-A may sometimes be referred to as to "take a hop". See the [US Air Force AMC Space-A website](http://www.amc.af.mil/Home/AMC-Travel-Site/) for more information on eligibility. 
 
 This web app shows you upcoming 72 HR flights for Space-A and provides sign up instructions and sign up email template for eligible passengers. 
 
@@ -17,4 +17,6 @@ This web app shows you upcoming 72 HR flights for Space-A and provides sign up i
 
 ### License
 
-All code not part of another framework is written by [Anson Liu](http://github.com/ansonl) and available under MIT License with public attribution required. 
+All code not part of another framework is written by [Anson Liu](http://github.com/ansonl) and made available under MIT License with public attribution required. 
+
+All code that is part of another framework is distributed under their respective owners' terms. 
