@@ -1,6 +1,6 @@
 # Fly Space-A JS web app
 
-A frontend application that displays upcoming [US Air Force AMC Space-A](http://www.amc.af.mil/Home/AMC-Travel-Site/) flights.
+A frontend application for [Fly Space-A](https://facebook.com/flyspacea) that displays upcoming [US Air Force AMC Space-A](http://www.amc.af.mil/Home/AMC-Travel-Site/) flights. Accessible at [flyspacea.com](https://flyspacea.com)
 
 ![flyspacea animated demo gif](https://github.com/flyspacea/flyspacea.github.io/raw/master/assets/demo/demo.gif)
 
