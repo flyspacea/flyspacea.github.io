@@ -66,7 +66,7 @@ function setupLocationDropdownSelectHandler() {
 	//Set mobile picker for smaller screens
 	//if (screen.width < 650)
 	//	locationDropdownBtn.selectpicker('mobile');
-	
+
 }
 
 function setupToggleHandlers() {
@@ -329,10 +329,13 @@ function setLocationsInDropdown(locations) {
 
 			//Set item keywords for live search
 			var keywordListString;
-			presetKeywords[presetLocations.indexOf(element)].forEach(function(element) {
-				keywordListString += element + ' ';
-			});
-			locationOpt.attr('data-tokens', keywordListString) 
+			var locationKeywordsArr = presetKeywords[presetLocations.indexOf(element)];
+			if (locationKeywordsArr) {
+				presetKeywords[presetLocations.indexOf(element)].forEach(function(element) {
+					keywordListString += element + ' ';
+				});
+				locationOpt.attr('data-tokens', keywordListString) 
+			}
 		} else {
 			locationOpt.text('\ud83d\udeab' + locationOpt.text()) //Add no entry sign
 		}
