@@ -252,6 +252,7 @@ function hideProgressBar() {
 function flashLocationDropdownTooltip(enable) {
 	if (enable) {
 		flashLocationDropdownTooltipStatus = true
+		locationDropdownBtn.attr('data-toggle', 'tooltip') //Add and remove element attribute because popper.js scrolls dropdown menu horizontally when scrolling vertically on mobile.
 		locationDropdownBtn.tooltip('show');
 		window.setTimeout(function() {
 			locationDropdownBtn.tooltip('hide');
@@ -266,6 +267,7 @@ function flashLocationDropdownTooltip(enable) {
 	} else {
 		flashLocationDropdownTooltipStatus = false
 		locationDropdownBtn.tooltip('hide')
+		locationDropdownBtn.attr('data-toggle', '')
 	}
 }
 

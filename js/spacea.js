@@ -97,14 +97,15 @@ function updateLocationDropdown() {
 								setDropdownTitle(kLatestFlights);
 							}
 
-							/*
+							
 							//Start flashing tooltip after setting the initial dropdown value
 							flashLocationDropdownTooltip(true);
+							/*
 							window.setTimeout(function() {
 									flashLocationDropdownTooltip(false)
 							}, 2000);
 							*/
-							
+					
 							break;
 						default:
 							showErrorRetry('Invalid data from server.')

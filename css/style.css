@@ -5,3 +5,40 @@
 #progress-bar-row {
 	margin-top: 10px;
 }
+
+.footer-hrule {
+	height: 12px;
+  border: 0;
+  box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);
+}
+
+#info-footer-row {
+	position: relative;
+}
+
+#info-footer-row div {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+#info-footer-row div.fb-like {
+	position: absolute;
+  right: 0;
+  padding-bottom: 5px;
+}
+
+#info-footer-row a:link {
+	text-decoration: none;
+	color: #555;
+}
+
+#info-footer-row a:visited {
+	text-decoration: none;
+	color: #555;
+
+}
+
+#info-footer-row a:hover {
+	text-decoration: none;
+	color: #111;
+}
