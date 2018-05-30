@@ -21,7 +21,12 @@ var FlightDirectionEnum = {
 }
 
 $(document).ready(function() {
-	updateLocationDropdown();
+	if (!setupDisclaimer(false)) {
+		updateLocationDropdown();
+	}
+
+	//Uncomment to setup dropdown if not triggered by disclaimer
+	//updateLocationDropdown();
 });
 
 //Check location hash to load any locations from sharing

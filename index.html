@@ -25,6 +25,7 @@
 	<script type="text/javascript" src="js/moment-with-locales.min.js"></script>
 	<script type="text/javascript" src="js/moment-timezone-with-data.min.js"></script>
 
+	<script type="text/javascript" src="js/disclaimer.js"></script>
 	<script type="text/javascript" src="js/handlers.js"></script>
 	<script type="text/javascript" src="js/ui-states.js"></script>
 	<script type="text/javascript" src="js/spacea.js"></script>
@@ -162,7 +163,7 @@
 		</div>
 		<hr class="footer-hrule"/>
 		<div class="row" id="info-footer-row">
-			<div><a href="https://facebook.com/flyspacea">About Fly Space-A</a></div> <div><a href="https://github.com/flyspacea">Get the Code</a></div> <div><a href="http://ansonliu.com">Hire the developer</a></div> 
+			<div><a href="https://facebook.com/flyspacea">About Fly Space-A</a></div> <div><a href="https://digitaltipjar.com/ansonl?_external=true">Tip Fly Space-A</a></div> <div><a href="http://ansonliu.com">Hire the Developer</a></div> 
 			<div class="fb-like" data-href="https://facebook.com/flyspacea" data-layout="button_count" data-action="like" data-size="large" data-show-faces="true" data-share="true"></div>
 		</div>
 	</div>
@@ -222,7 +223,20 @@
 		</div>
 	</div>
 
+<!-- Disclaimer -->
+	<div class="alert alert-warning disclaimer" role="alert">
+		<h3>What is Fly Space-A?</h3>
+		<p>Fly Space-A shows you upcoming flights for Space-A and provides sign up email template for eligible passengers. </p>
+		<p>Flights can be filtered by location, departure, and arrival; saving time from reading every AMC Space-A site. </p>
+		<p>Space Available flight is a privilege for members of the US DoD to be transported on DoD aircraft when capacity allows. </p>
+		<p>Fly Space-A analyzes official <a href="http://www.amc.af.mil/Home/AMC-Travel-Site/" class="alert-link">USAF AMC public sites</a> to find flights. Algorithms may be inaccurate at times due to social media post format, terminal personnel updating/removing social media posts, and constrained computing power. </p>
+		<p>All data is provided as is and the user is responsible for verifying any data and flight information with offical sources.</p>
+		<p>Fly Space-A is NOT endorsed by the U.S. GOVERNMENT. For more information regarding Space-Available flights and eligibility, <a href="http://www.amc.af.mil/Home/AMC-Travel-Site/" class="alert-link">click here.</a></p>
+		<br/>
+		<button type="button" class="btn btn-primary" id="disclaimer-btn">I Understand</button>
+	</div>
 
+<!-- FB SDK include for like box -->
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
