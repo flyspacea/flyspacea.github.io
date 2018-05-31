@@ -163,8 +163,13 @@
 		</div>
 		<hr class="footer-hrule"/>
 		<div class="row" id="info-footer-row">
-			<div><a href="https://facebook.com/flyspacea">About Fly Space-A</a></div> <div><a href="https://digitaltipjar.com/ansonl?_external=true">Tip Fly Space-A</a></div> <div><a href="http://ansonliu.com">Hire the Developer</a></div> 
-			<div class="fb-like" data-href="https://facebook.com/flyspacea" data-layout="button_count" data-action="like" data-size="large" data-show-faces="true" data-share="true"></div>
+			<div><a href="https://facebook.com/flyspacea">About Fly Space-A</a></div> <div><a href="https://digitaltipjar.com/ansonl?_external=true">Tip Fly Space-A</a></div> <div><a href="http://ansonliu.com">Hire Me</a></div> 
+			<div class="footer-fb-elements">
+				<div class="fb-login-button" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div> 
+				<div class="fb-like" data-href="https://facebook.com/flyspacea" data-layout="button_count" data-action="like" data-size="large" data-show-faces="true" data-share="true"></div>
+				
+			</div>
+			
 		</div>
 	</div>
 
@@ -237,12 +242,44 @@
 	</div>
 
 <!-- FB SDK include for like box -->
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0';
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '522755171230853',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v3.0'
+    });
+      
+    FB.AppEvents.logPageView();   
+      
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+  /**
+	 * This function will log selectedLocation App Event
+	 * @param {string} location
+	 */
+	function logSelectedLocationEvent(location) {
+	    var params = {};
+	    params['location'] = location;
+	    FB.AppEvents.logEvent('selectedLocation', null, params);
+	}
+	function logSelectedSourceEvent(origin, destination) {
+    var params = {};
+    params['origin'] = origin;
+    params['destination'] = destination;
+    FB.AppEvents.logEvent('selectedSource', null, params);
+	}
+</script>
+
+
 	</body>
 	</html>

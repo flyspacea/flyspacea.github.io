@@ -405,7 +405,7 @@ function setFlightsViewData(flights, location, direction, startDate, durationDay
 			$("<td/>").addClass("source-row").append(
 				$("<div/>").addClass("btn-group").attr("role", "group").attr("aria-label", "Flight options").append(
 					$("<button/>").attr('type', 'button').addClass("btn btn-primary").attr('title', 'View Facebook Source Image').attr('target', 'popup')
-					.attr('onclick', 'window.open(\'' + photoURL + '\',\'popup\',\'width=1000,height=800\'); return false;')
+					.attr('onclick', 'window.open(\'' + photoURL + '\',\'popup\',\'width=1000,height=800\'); logSelectedSourceEvent(\'' + flight['origin'] + '\',\'' + flight['destination'] + '\'); return false;')
 					.attr('href', photoURL)
 					.text('\ud83d\udd0d'),
 				$("<button/>").attr('type', 'button')

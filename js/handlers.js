@@ -53,6 +53,11 @@ function dropdownItemSelected(title) {
 
 	//Set url hash to location for user sharing
 	location.hash = title
+
+	//https://developers.facebook.com/docs/app-events/getting-started-app-events-web
+	//Call Facebook app event for selected location
+	//Defined in index.html
+	logSelectedLocationEvent(title);
 }
 
 /*
