@@ -10,6 +10,10 @@ Space Available flight is a privilege for members of the US DoD to be transporte
 
 This web app shows you upcoming 72 HR flights for Space-A and provides sign up instructions and sign up email template for eligible passengers. 
 
+### How are the flight schedule photos from Facebook processed?
+
+Please see [ansonl/flyspacea-backend](https://github.com/ansonl/flyspacea-backend) for Fly Space-A photo processor backend information. Implementation details are available in the same repo [here](https://github.com/ansonl/flyspacea-backend/raw/master-public/assets/fsa_implementation_slides.pdf).
+
 ### Using locally
 
 - Download or clone the entire repository.
